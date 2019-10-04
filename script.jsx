@@ -3,6 +3,8 @@ var Product = React.createClass({
     return {qty: 0};
   },
   
+  // Buy button on click adds 1 to the product quantity with this function
+  // Additionally this function is used to pull the product price into calculateTotal function 
   buy: function() {
     this.setState({qty: this.state.qty + 1});
     this.props.handleTotal(this.props.price);
@@ -35,6 +37,35 @@ var Total = React.createClass({
   }
 });
 
+var ProductForm = React.createClass({
+  submit: function(e) {
+    e.preventDefault();
+    //alert('Name: ' + this.refs.name.value + '- $'+ this.refs.price.value);
+    
+    var product = {
+      name: this.refs.name.value,
+      price: parseInt(this.refs.price.value)
+    }
+    
+    this.props.handleCreate(product);
+    
+    this.refs.name.value = "";
+    this.refs.price.value = "";
+  },
+
+render: function() {
+  return (
+    <form onSubmit = {this.submit}>
+    <input type = "text" placeholder = "product name" ref = "name" /> -
+    <input type = "text" placeholder = "product price" ref = "price" />
+    <br/><br/>
+    <button>Create Product</button>
+    <hr/>
+    </form>
+    );
+  }
+});
+
 var ProductList = React.createClass({
   getInitialState: function() {
     return {
@@ -47,9 +78,15 @@ var ProductList = React.createClass({
     };
   },
   
+  createProduct: function(product) {
+    this.setState ({
+      productList: this.state.productList.concat(product)
+    })
+  },
+  
   calculateTotal: function(price) {
     this.setState({total: this.state.total + price});
-    alert(this.state.total);
+    //alert(this.state.total);
   },
   
   showProduct: function(name) {
@@ -68,6 +105,7 @@ var ProductList = React.createClass({
     
     return (
       <div>
+        <ProductForm handleCreate = {this.createProduct}/>
         {products}
         <Total total={this.state.total}/>
       </div>
@@ -78,23 +116,26 @@ var ProductList = React.createClass({
 React.render(<ProductList/>, document.getElementById("root"));
 
 
-  /*This block of code is no longer needed because the function above 
-  pulls information from the product list array!!!!!!!!!
+/*This block of code is no longer needed because the function above 
+pulls information from the product list array!!!!!!!!!
   
-    return(
-      <div>
-      <Product name="Android" price ={121} 
-        handleShow={this.showProduct}
-        handleTotal={this.calculateTotal}/>
-      <Product name="Apple" price ={129}
-        handleShow={this.showProduct}
-        handleTotal={this.calculateTotal}/>
-      <Product name="Nokia" price ={65}
-        handleShow={this.showProduct}
-        handleTotal={this.calculateTotal}/>
-      <Total total={this.state.total}/>
-      </div>
-      );
+  return(
+    <div>
+    <Product name="Android" price ={121} 
+      handleShow={this.showProduct}
+      handleTotal={this.calculateTotal}/>
+    
+    <Product name="Apple" price ={129}
+      handleShow={this.showProduct}
+      handleTotal={this.calculateTotal}/>
+    
+    <Product name="Nokia" price ={65}
+      handleShow={this.showProduct}
+      handleTotal={this.calculateTotal}/>
+    
+    <Total total={this.state.total}/>
+    </div>
+    );
   }
 });*/
 
